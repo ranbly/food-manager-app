@@ -27,6 +27,7 @@ class _$FoodTearOff {
       required String refrigerator,
       required int count,
       required StorageMethod storageMethod,
+      String? memo,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
           required DateTime expirationAt}) {
     return _Food(
@@ -36,6 +37,7 @@ class _$FoodTearOff {
       refrigerator: refrigerator,
       count: count,
       storageMethod: storageMethod,
+      memo: memo,
       expirationAt: expirationAt,
     );
   }
@@ -56,6 +58,7 @@ mixin _$Food {
   String get refrigerator => throw _privateConstructorUsedError;
   int get count => throw _privateConstructorUsedError;
   StorageMethod get storageMethod => throw _privateConstructorUsedError;
+  String? get memo => throw _privateConstructorUsedError;
   @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
   DateTime get expirationAt => throw _privateConstructorUsedError;
 
@@ -75,6 +78,7 @@ abstract class $FoodCopyWith<$Res> {
       String refrigerator,
       int count,
       StorageMethod storageMethod,
+      String? memo,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
           DateTime expirationAt});
 }
@@ -95,6 +99,7 @@ class _$FoodCopyWithImpl<$Res> implements $FoodCopyWith<$Res> {
     Object? refrigerator = freezed,
     Object? count = freezed,
     Object? storageMethod = freezed,
+    Object? memo = freezed,
     Object? expirationAt = freezed,
   }) {
     return _then(_value.copyWith(
@@ -122,6 +127,10 @@ class _$FoodCopyWithImpl<$Res> implements $FoodCopyWith<$Res> {
           ? _value.storageMethod
           : storageMethod // ignore: cast_nullable_to_non_nullable
               as StorageMethod,
+      memo: memo == freezed
+          ? _value.memo
+          : memo // ignore: cast_nullable_to_non_nullable
+              as String?,
       expirationAt: expirationAt == freezed
           ? _value.expirationAt
           : expirationAt // ignore: cast_nullable_to_non_nullable
@@ -142,6 +151,7 @@ abstract class _$FoodCopyWith<$Res> implements $FoodCopyWith<$Res> {
       String refrigerator,
       int count,
       StorageMethod storageMethod,
+      String? memo,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
           DateTime expirationAt});
 }
@@ -163,6 +173,7 @@ class __$FoodCopyWithImpl<$Res> extends _$FoodCopyWithImpl<$Res>
     Object? refrigerator = freezed,
     Object? count = freezed,
     Object? storageMethod = freezed,
+    Object? memo = freezed,
     Object? expirationAt = freezed,
   }) {
     return _then(_Food(
@@ -190,6 +201,10 @@ class __$FoodCopyWithImpl<$Res> extends _$FoodCopyWithImpl<$Res>
           ? _value.storageMethod
           : storageMethod // ignore: cast_nullable_to_non_nullable
               as StorageMethod,
+      memo: memo == freezed
+          ? _value.memo
+          : memo // ignore: cast_nullable_to_non_nullable
+              as String?,
       expirationAt: expirationAt == freezed
           ? _value.expirationAt
           : expirationAt // ignore: cast_nullable_to_non_nullable
@@ -209,6 +224,7 @@ class _$_Food implements _Food {
       required this.refrigerator,
       required this.count,
       required this.storageMethod,
+      this.memo,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
           required this.expirationAt});
 
@@ -228,12 +244,14 @@ class _$_Food implements _Food {
   @override
   final StorageMethod storageMethod;
   @override
+  final String? memo;
+  @override
   @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
   final DateTime expirationAt;
 
   @override
   String toString() {
-    return 'Food(id: $id, name: $name, author: $author, refrigerator: $refrigerator, count: $count, storageMethod: $storageMethod, expirationAt: $expirationAt)';
+    return 'Food(id: $id, name: $name, author: $author, refrigerator: $refrigerator, count: $count, storageMethod: $storageMethod, memo: $memo, expirationAt: $expirationAt)';
   }
 
   @override
@@ -254,6 +272,8 @@ class _$_Food implements _Food {
             (identical(other.storageMethod, storageMethod) ||
                 const DeepCollectionEquality()
                     .equals(other.storageMethod, storageMethod)) &&
+            (identical(other.memo, memo) ||
+                const DeepCollectionEquality().equals(other.memo, memo)) &&
             (identical(other.expirationAt, expirationAt) ||
                 const DeepCollectionEquality()
                     .equals(other.expirationAt, expirationAt)));
@@ -268,6 +288,7 @@ class _$_Food implements _Food {
       const DeepCollectionEquality().hash(refrigerator) ^
       const DeepCollectionEquality().hash(count) ^
       const DeepCollectionEquality().hash(storageMethod) ^
+      const DeepCollectionEquality().hash(memo) ^
       const DeepCollectionEquality().hash(expirationAt);
 
   @JsonKey(ignore: true)
@@ -289,6 +310,7 @@ abstract class _Food implements Food {
       required String refrigerator,
       required int count,
       required StorageMethod storageMethod,
+      String? memo,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
           required DateTime expirationAt}) = _$_Food;
 
@@ -306,6 +328,8 @@ abstract class _Food implements Food {
   int get count => throw _privateConstructorUsedError;
   @override
   StorageMethod get storageMethod => throw _privateConstructorUsedError;
+  @override
+  String? get memo => throw _privateConstructorUsedError;
   @override
   @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
   DateTime get expirationAt => throw _privateConstructorUsedError;

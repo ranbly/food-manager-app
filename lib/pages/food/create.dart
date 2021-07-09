@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:food_manager_app/common/app_colors.dart';
 import 'package:food_manager_app/controllers/foods.dart';
-import 'package:food_manager_app/enum/food_category.dart';
 import 'package:food_manager_app/enum/storage_method.dart';
 import 'package:get/get.dart';
 
@@ -22,6 +21,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
   DateTime? _expiredAt;
   final nameController = TextEditingController();
   final countController = TextEditingController();
+  final memoController = TextEditingController();
   StorageMethod storageMethod = StorageMethod.refrigerate;
 
   // Foods Controller
@@ -75,6 +75,11 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                             controller: countController,
                             decoration: InputDecoration(hintText: '수량'),
                             onEditingComplete: () {},
+                          ),
+                          TextField(
+                            keyboardType: TextInputType.text,
+                            controller: memoController,
+                            decoration: InputDecoration(hintText: '메모'),
                           ),
                           _buildCategoryGroup(context),
                         ])),
@@ -135,6 +140,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
         storageMethod: storageMethod,
         expirationAt: expiredAt,
         count: int.parse(countController.text),
+        memo: memoController.value.text,
       );
 
       Get.back();

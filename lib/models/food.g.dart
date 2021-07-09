@@ -14,6 +14,7 @@ _$_Food _$_$_FoodFromJson(Map<String, dynamic> json) {
     refrigerator: json['refrigerator'] as String,
     count: json['count'] as int,
     storageMethod: _$enumDecode(_$StorageMethodEnumMap, json['storageMethod']),
+    memo: json['memo'] as String?,
     expirationAt: dateTimeFromJson(json['expirationAt'] as Timestamp?),
   );
 }
@@ -25,6 +26,7 @@ Map<String, dynamic> _$_$_FoodToJson(_$_Food instance) => <String, dynamic>{
       'refrigerator': instance.refrigerator,
       'count': instance.count,
       'storageMethod': _$StorageMethodEnumMap[instance.storageMethod],
+      'memo': instance.memo,
       'expirationAt': dateTimeToJson(instance.expirationAt),
     };
 
