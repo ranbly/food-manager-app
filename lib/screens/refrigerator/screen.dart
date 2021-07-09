@@ -89,51 +89,48 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
             ),
           ),
         ),
-        body: AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            child: !isListOpened
-                ? LayoutBuilder(builder: (context, constraints) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(top: 16),
-                            color: Color(0xFFFAFBFF),
-                            height: constraints.maxHeight / 2,
-                            child: TabBarView(
-                              children: [
-                                _buildFoodListSummary(),
-                                _buildFoodListSummary(
-                                    storageMethod: StorageMethod.refrigerate),
-                                _buildFoodListSummary(
-                                    storageMethod: StorageMethod.freeze),
-                                _buildFoodListSummary(
-                                    storageMethod:
-                                        StorageMethod.roomTemperature)
-                              ],
-                            ),
-                          ),
-                          _buildMemos(),
-                        ],
+        body: !isListOpened
+            ? LayoutBuilder(builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(top: 16),
+                        color: Color(0xFFFAFBFF),
+                        height: constraints.maxHeight / 2,
+                        child: TabBarView(
+                          children: [
+                            _buildFoodListSummary(),
+                            _buildFoodListSummary(
+                                storageMethod: StorageMethod.refrigerate),
+                            _buildFoodListSummary(
+                                storageMethod: StorageMethod.freeze),
+                            _buildFoodListSummary(
+                                storageMethod: StorageMethod.roomTemperature)
+                          ],
+                        ),
                       ),
-                    );
-                  })
-                : Container(
-                    padding: EdgeInsets.only(top: 16),
-                    color: Color(0xFFFAFBFF),
-                    child: TabBarView(children: [
-                      _buildFoodListFull(),
-                      _buildFoodListFull(
-                        storageMethod: StorageMethod.refrigerate,
-                      ),
-                      _buildFoodListFull(
-                        storageMethod: StorageMethod.freeze,
-                      ),
-                      _buildFoodListFull(
-                        storageMethod: StorageMethod.roomTemperature,
-                      )
-                    ]),
-                  )),
+                      _buildMemos(),
+                    ],
+                  ),
+                );
+              })
+            : Container(
+                padding: EdgeInsets.only(top: 16),
+                color: Color(0xFFFAFBFF),
+                child: TabBarView(children: [
+                  _buildFoodListFull(),
+                  _buildFoodListFull(
+                    storageMethod: StorageMethod.refrigerate,
+                  ),
+                  _buildFoodListFull(
+                    storageMethod: StorageMethod.freeze,
+                  ),
+                  _buildFoodListFull(
+                    storageMethod: StorageMethod.roomTemperature,
+                  )
+                ]),
+              ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Get.toNamed('/food/new');
