@@ -4,6 +4,7 @@ import 'package:food_manager_app/wigets/day_chip.dart';
 
 class FoodItem extends StatelessWidget {
   final Food food;
+
   const FoodItem(this.food) : super();
 
   @override
@@ -13,7 +14,7 @@ class FoodItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // DayChip(day: food.expirationDate),
+          DayChip(date: food.expirationAt),
           Padding(
             padding: EdgeInsets.only(
               left: 12,

@@ -1,4 +1,5 @@
 import 'package:food_manager_app/enum/food_category.dart';
+import 'package:food_manager_app/enum/storage_method.dart';
 import 'package:food_manager_app/models/converter/timestamp_converter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,9 +17,9 @@ class Food with _$Food {
     required String author,
     required String refrigerator,
     required int count,
+    required StorageMethod storageMethod,
     @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-        required DateTime expirationDate,
-    required FoodCategory category,
+        required DateTime expirationAt,
   }) = _Food;
 
   factory Food.fromJson(Map<String, dynamic> json) => _$FoodFromJson(json);

@@ -1,11 +1,9 @@
-import 'dart:math';
+import 'dart:math' as math;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_manager_app/controllers/foods.dart';
 import 'package:food_manager_app/controllers/memos.dart';
-import 'package:food_manager_app/enum/food_category.dart';
-import 'package:food_manager_app/models/food.dart';
+import 'package:food_manager_app/enum/storage_method.dart';
 import 'package:food_manager_app/models/refrigerator.dart';
 import 'package:food_manager_app/wigets/food_item.dart';
 import 'package:food_manager_app/wigets/memo_input.dart';
@@ -20,7 +18,15 @@ class RefrigeratorScreen extends StatefulWidget {
     required this.refrigerator,
   }) : super(key: key) {
     Get.put(MemosController(refrigerator: refrigerator));
-    Get.put(FoodsController(refrigerator: refrigerator));
+
+    final methods = <StorageMethod?>[null, ...StorageMethod.values];
+    methods.forEach((element) {
+      Get.put(
+        FoodsController(refrigerator: refrigerator, storageMethod: element),
+        tag: element?.tag,
+        permanent: true,
+      );
+    });
   }
 
   @override
@@ -60,27 +66,19 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
                   tabs: [
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Tab(
-                        text: '전체',
-                      ),
+                      child: Tab(text: '전체'),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Tab(
-                        text: '냉장고',
-                      ),
+                      child: Tab(text: '냉장고'),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Tab(
-                        text: '냉동실',
-                      ),
+                      child: Tab(text: '냉동실'),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Tab(
-                        text: '실온',
-                      ),
+                      child: Tab(text: '실온'),
                     ),
                   ],
                 ),
@@ -88,37 +86,49 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
             ),
           ),
         ),
-        body: Container(
+        body: AnimatedContainer(
+            duration: Duration(milliseconds: 300),
             child: !isListOpened
-                ? SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          color: Color(0xFFFAFBFF),
-                          height: MediaQuery.of(context).size.height * 0.35,
-                          padding: EdgeInsets.only(top: 16),
-                          child: TabBarView(children: [
-                            _buildFoodListContainer(),
-                            _buildFoodListContainer(
-                                category: FoodCategory.FRIDGE),
-                            _buildFoodListContainer(
-                                category: FoodCategory.FREEZER),
-                            _buildFoodListContainer(
-                                category: FoodCategory.ROOM_TEMPERATURE)
-                          ]),
-                        ),
-                        _buildMemos(),
-                      ],
-                    ),
-                  )
+                ? LayoutBuilder(builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(top: 16),
+                            color: Color(0xFFFAFBFF),
+                            height: constraints.maxHeight / 2,
+                            child: TabBarView(
+                              children: [
+                                _buildFoodListSummary(),
+                                _buildFoodListSummary(
+                                    storageMethod: StorageMethod.refrigerate),
+                                _buildFoodListSummary(
+                                    storageMethod: StorageMethod.freeze),
+                                _buildFoodListSummary(
+                                    storageMethod:
+                                        StorageMethod.roomTemperature)
+                              ],
+                            ),
+                          ),
+                          _buildMemos(),
+                        ],
+                      ),
+                    );
+                  })
                 : Container(
                     padding: EdgeInsets.only(top: 16),
                     color: Color(0xFFFAFBFF),
                     child: TabBarView(children: [
-                      __buildFoodFullListContainer(),
-                      __buildFoodFullListContainer(),
-                      __buildFoodFullListContainer(),
-                      __buildFoodFullListContainer()
+                      _buildFoodListFull(),
+                      _buildFoodListFull(
+                        storageMethod: StorageMethod.refrigerate,
+                      ),
+                      _buildFoodListFull(
+                        storageMethod: StorageMethod.freeze,
+                      ),
+                      _buildFoodListFull(
+                        storageMethod: StorageMethod.roomTemperature,
+                      )
                     ]),
                   )),
         floatingActionButton: FloatingActionButton(
@@ -132,63 +142,51 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
     );
   }
 
-  //steam builder, future builder
-  Widget _buildFoodListContainer({FoodCategory? category}) {
-    return Container();
-
-    // return StreamBuilder<QuerySnapshot>(
-    //     stream: FirebaseFirestore.instance
-    //         .collection('foods')
-    //         .where('category', isEqualTo: category?.value)
-    //         .snapshots(),
-    //     builder: (context, snapshot) {
-    //       final docs = snapshot.data?.docs ?? [];
-    //       return Container(
-    //           child: Column(children: [
-    //         ...docs.sublist(0, min(5, docs.length)).map((doc) => FoodItem(
-    //               Food(
-    //                   name: doc.get('name'),
-    //                   expirationDate: doc.get('expirationDate'),
-    //                   count: doc.get('count'),
-    //                   category: FoodCategory.FREEZER),
-    //             )),
-    //         Expanded(child: Container()),
-    //         TextButton(
-    //             onPressed: _toggleList,
-    //             child: Text('전체보기',
-    //                 style: TextStyle(
-    //                     color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
-    //       ]));
-    //     });
+  /// 최대 5개 까지 음식 리스트를 보여주는 리스트
+  Widget _buildFoodListSummary({StorageMethod? storageMethod}) {
+    final foodsController = Get.find<FoodsController>(tag: storageMethod?.tag);
+    return Obx(
+      () => Column(
+        children: [
+          ...foodsController.foods
+              .sublist(0, math.min(5, foodsController.foods.length))
+              .map((food) => FoodItem(food)),
+          Expanded(child: Container()),
+          TextButton(
+              onPressed: _toggleList,
+              child: Text('전체보기',
+                  style: TextStyle(
+                      color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
+        ],
+      ),
+    );
   }
 
-  Widget __buildFoodFullListContainer() {
-    return Container();
-    // return SafeArea(
-    //   child: Column(children: [
-    //     Expanded(
-    //         child: SingleChildScrollView(
-    //       child: Container(
-    //         child: Column(
-    //           children: [
-    //             FoodItem(
-    //               Food(
-    //                   name: '딸기',
-    //                   expirationDate: 1,
-    //                   count: 1,
-    //                   category: FoodCategory.ROOM_TEMPERATURE),
-    //             )
-    //           ],
-    //         ),
-    //       ),
-    //     )),
-    //     TextButton(
-    //         onPressed: _toggleList,
-    //         child: Text('접기',
-    //             style: TextStyle(
-    //                 color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
-    //   ]),
-    // );
+  /// 모든 음식 리스트를 보여주는 리스트
+  Widget _buildFoodListFull({StorageMethod? storageMethod}) {
+    final foodsController = Get.find<FoodsController>(tag: storageMethod?.tag);
+
+    return Obx(
+      () => SafeArea(
+        child: Column(children: [
+          Expanded(
+              child: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: foodsController.foods
+                    .map((food) => FoodItem(food))
+                    .toList(),
+              ),
+            ),
+          )),
+          TextButton(
+              onPressed: _toggleList,
+              child: Text('접기',
+                  style: TextStyle(
+                      color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
+        ]),
+      ),
+    );
   }
 
   bool isListOpened = false;
@@ -200,6 +198,7 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
     });
   }
 
+  /// 메모 리스트
   Widget _buildMemos() {
     return Obx(
       () => Container(

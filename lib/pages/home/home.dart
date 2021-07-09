@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_manager_app/controllers/home.dart';
-import 'package:food_manager_app/pages/refrigerator/screen.dart';
+import 'package:food_manager_app/screens/refrigerator/screen.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {

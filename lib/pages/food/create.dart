@@ -1,10 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:food_manager_app/common/app_colors.dart';
+import 'package:food_manager_app/controllers/foods.dart';
 import 'package:food_manager_app/enum/food_category.dart';
-import 'package:food_manager_app/models/food.dart';
+import 'package:food_manager_app/enum/storage_method.dart';
+import 'package:get/get.dart';
 
 class CreateFoodPage extends StatefulWidget {
   static final routePath = '/food/new';
@@ -15,77 +17,15 @@ class CreateFoodPage extends StatefulWidget {
 
 class _CreateFoodPageState extends State<CreateFoodPage> {
   final _formKey = GlobalKey<FormState>();
-  final controller = TextEditingController();
 
+  // Food Form Item
+  DateTime? _expiredAt;
   final nameController = TextEditingController();
-  final expirationDateController = TextEditingController();
   final countController = TextEditingController();
-  FoodCategory category = FoodCategory.FRIDGE;
+  StorageMethod storageMethod = StorageMethod.refrigerate;
 
-  Future<void> _addFoodItem() async {
-    // if (nameController.value.text == '' ||
-    //     expirationDateController.value.text == '' ||
-    //     countController.value.text == '') {
-    //   return;
-    // }
-    // var foodItem = Food(
-    //   name: nameController.value.text,
-    //   expirationDate: int.parse(expirationDateController.value.text),
-    //   count: int.parse(countController.value.text),
-    //   category: category,
-    // );
-    //
-    // CollectionReference foods = FirebaseFirestore.instance.collection('foods');
-    // try {
-    //   await foods.add(foodItem.toJson());
-    //   print('Add foods ${foodItem.toJson()}');
-    // } catch (e) {
-    //   print("Failed to add foods: $e");
-    // }
-  }
-
-  Widget _buildCategoryGroup(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        RadioListTile<FoodCategory>(
-          title: const Text('냉장고'),
-          value: FoodCategory.FRIDGE,
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          groupValue: category,
-          onChanged: (FoodCategory? value) {
-            if (value == null) return;
-            setState(() {
-              category = value;
-            });
-          },
-        ),
-        RadioListTile<FoodCategory>(
-          title: const Text('냉동고'),
-          value: FoodCategory.FREEZER,
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          groupValue: category,
-          onChanged: (FoodCategory? value) {
-            if (value == null) return;
-            setState(() {
-              category = value;
-            });
-          },
-        ),
-        RadioListTile<FoodCategory>(
-          title: const Text('실온'),
-          value: FoodCategory.ROOM_TEMPERATURE,
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          groupValue: category,
-          onChanged: (FoodCategory? value) {
-            if (value == null) return;
-            setState(() {
-              category = value;
-            });
-          },
-        ),
-      ],
-    );
-  }
+  // Foods Controller
+  FoodsController get foodsController => Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +51,24 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                             decoration: InputDecoration(hintText: '식품명'),
                             onEditingComplete: () {},
                           ),
-                          TextField(
-                            keyboardType: TextInputType.number,
-                            controller: expirationDateController,
-                            decoration: InputDecoration(hintText: '남은기간'),
-                            onEditingComplete: () {},
+                          InkWell(
+                            onTap: () async {
+                              final date = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now()
+                                    .subtract(Duration(days: 365 * 10)),
+                                lastDate: DateTime.now()
+                                    .add(Duration(days: 365 * 10)),
+                              );
+                              if (date == null) return;
+                              setState(() {
+                                this._expiredAt = date;
+                              });
+                            },
+                            child: Text(
+                              this._expiredAt?.toIso8601String() ?? '날짜 없음',
+                            ),
                           ),
                           TextField(
                             keyboardType: TextInputType.number,
@@ -134,9 +87,8 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 24),
                   child: TextButton(
-                    onPressed: () async {
-                      await _addFoodItem();
-                      Navigator.pop(context);
+                    onPressed: () {
+                      _addFoodItem();
                     },
                     child: Text('추가하기'),
                     style: TextButton.styleFrom(
@@ -150,5 +102,44 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                 ))
           ],
         ));
+  }
+
+  // Storage Method Form
+  Widget _buildCategoryGroup(BuildContext context) {
+    return DropdownButtonFormField<StorageMethod>(
+      value: storageMethod,
+      items: StorageMethod.values
+          .map((e) => DropdownMenuItem(value: e, child: Text(e.label)))
+          .toList(),
+      onChanged: (method) {
+        if (method == null) return;
+        setState(() {
+          this.storageMethod = method;
+        });
+      },
+    );
+  }
+
+  Future<void> _addFoodItem() async {
+    final expiredAt = _expiredAt;
+    if (nameController.value.text == '' ||
+        countController.value.text == '' ||
+        expiredAt == null) {
+      return;
+    }
+
+    try {
+      EasyLoading.show();
+      await foodsController.addFood(
+        name: nameController.text,
+        storageMethod: storageMethod,
+        expirationAt: expiredAt,
+        count: int.parse(countController.text),
+      );
+
+      Get.back();
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 }

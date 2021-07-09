@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DayChip extends StatelessWidget {
-  final int day;
-  const DayChip({required this.day}) : super();
+  final DateTime date;
+
+  const DayChip({required this.date}) : super();
+
+  int get day => DateTime.now().difference(date).inDays;
 
   @override
   Widget build(BuildContext context) {

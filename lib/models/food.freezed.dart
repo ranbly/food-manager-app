@@ -26,17 +26,17 @@ class _$FoodTearOff {
       required String author,
       required String refrigerator,
       required int count,
+      required StorageMethod storageMethod,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-          required DateTime expirationDate,
-      required FoodCategory category}) {
+          required DateTime expirationAt}) {
     return _Food(
       id: id,
       name: name,
       author: author,
       refrigerator: refrigerator,
       count: count,
-      expirationDate: expirationDate,
-      category: category,
+      storageMethod: storageMethod,
+      expirationAt: expirationAt,
     );
   }
 
@@ -55,9 +55,9 @@ mixin _$Food {
   String get author => throw _privateConstructorUsedError;
   String get refrigerator => throw _privateConstructorUsedError;
   int get count => throw _privateConstructorUsedError;
+  StorageMethod get storageMethod => throw _privateConstructorUsedError;
   @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-  DateTime get expirationDate => throw _privateConstructorUsedError;
-  FoodCategory get category => throw _privateConstructorUsedError;
+  DateTime get expirationAt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -74,9 +74,9 @@ abstract class $FoodCopyWith<$Res> {
       String author,
       String refrigerator,
       int count,
+      StorageMethod storageMethod,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-          DateTime expirationDate,
-      FoodCategory category});
+          DateTime expirationAt});
 }
 
 /// @nodoc
@@ -94,8 +94,8 @@ class _$FoodCopyWithImpl<$Res> implements $FoodCopyWith<$Res> {
     Object? author = freezed,
     Object? refrigerator = freezed,
     Object? count = freezed,
-    Object? expirationDate = freezed,
-    Object? category = freezed,
+    Object? storageMethod = freezed,
+    Object? expirationAt = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -118,14 +118,14 @@ class _$FoodCopyWithImpl<$Res> implements $FoodCopyWith<$Res> {
           ? _value.count
           : count // ignore: cast_nullable_to_non_nullable
               as int,
-      expirationDate: expirationDate == freezed
-          ? _value.expirationDate
-          : expirationDate // ignore: cast_nullable_to_non_nullable
+      storageMethod: storageMethod == freezed
+          ? _value.storageMethod
+          : storageMethod // ignore: cast_nullable_to_non_nullable
+              as StorageMethod,
+      expirationAt: expirationAt == freezed
+          ? _value.expirationAt
+          : expirationAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      category: category == freezed
-          ? _value.category
-          : category // ignore: cast_nullable_to_non_nullable
-              as FoodCategory,
     ));
   }
 }
@@ -141,9 +141,9 @@ abstract class _$FoodCopyWith<$Res> implements $FoodCopyWith<$Res> {
       String author,
       String refrigerator,
       int count,
+      StorageMethod storageMethod,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-          DateTime expirationDate,
-      FoodCategory category});
+          DateTime expirationAt});
 }
 
 /// @nodoc
@@ -162,8 +162,8 @@ class __$FoodCopyWithImpl<$Res> extends _$FoodCopyWithImpl<$Res>
     Object? author = freezed,
     Object? refrigerator = freezed,
     Object? count = freezed,
-    Object? expirationDate = freezed,
-    Object? category = freezed,
+    Object? storageMethod = freezed,
+    Object? expirationAt = freezed,
   }) {
     return _then(_Food(
       id: id == freezed
@@ -186,14 +186,14 @@ class __$FoodCopyWithImpl<$Res> extends _$FoodCopyWithImpl<$Res>
           ? _value.count
           : count // ignore: cast_nullable_to_non_nullable
               as int,
-      expirationDate: expirationDate == freezed
-          ? _value.expirationDate
-          : expirationDate // ignore: cast_nullable_to_non_nullable
+      storageMethod: storageMethod == freezed
+          ? _value.storageMethod
+          : storageMethod // ignore: cast_nullable_to_non_nullable
+              as StorageMethod,
+      expirationAt: expirationAt == freezed
+          ? _value.expirationAt
+          : expirationAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      category: category == freezed
-          ? _value.category
-          : category // ignore: cast_nullable_to_non_nullable
-              as FoodCategory,
     ));
   }
 }
@@ -208,9 +208,9 @@ class _$_Food implements _Food {
       required this.author,
       required this.refrigerator,
       required this.count,
+      required this.storageMethod,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-          required this.expirationDate,
-      required this.category});
+          required this.expirationAt});
 
   factory _$_Food.fromJson(Map<String, dynamic> json) =>
       _$_$_FoodFromJson(json);
@@ -226,14 +226,14 @@ class _$_Food implements _Food {
   @override
   final int count;
   @override
-  @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-  final DateTime expirationDate;
+  final StorageMethod storageMethod;
   @override
-  final FoodCategory category;
+  @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
+  final DateTime expirationAt;
 
   @override
   String toString() {
-    return 'Food(id: $id, name: $name, author: $author, refrigerator: $refrigerator, count: $count, expirationDate: $expirationDate, category: $category)';
+    return 'Food(id: $id, name: $name, author: $author, refrigerator: $refrigerator, count: $count, storageMethod: $storageMethod, expirationAt: $expirationAt)';
   }
 
   @override
@@ -251,12 +251,12 @@ class _$_Food implements _Food {
                     .equals(other.refrigerator, refrigerator)) &&
             (identical(other.count, count) ||
                 const DeepCollectionEquality().equals(other.count, count)) &&
-            (identical(other.expirationDate, expirationDate) ||
+            (identical(other.storageMethod, storageMethod) ||
                 const DeepCollectionEquality()
-                    .equals(other.expirationDate, expirationDate)) &&
-            (identical(other.category, category) ||
+                    .equals(other.storageMethod, storageMethod)) &&
+            (identical(other.expirationAt, expirationAt) ||
                 const DeepCollectionEquality()
-                    .equals(other.category, category)));
+                    .equals(other.expirationAt, expirationAt)));
   }
 
   @override
@@ -267,8 +267,8 @@ class _$_Food implements _Food {
       const DeepCollectionEquality().hash(author) ^
       const DeepCollectionEquality().hash(refrigerator) ^
       const DeepCollectionEquality().hash(count) ^
-      const DeepCollectionEquality().hash(expirationDate) ^
-      const DeepCollectionEquality().hash(category);
+      const DeepCollectionEquality().hash(storageMethod) ^
+      const DeepCollectionEquality().hash(expirationAt);
 
   @JsonKey(ignore: true)
   @override
@@ -288,9 +288,9 @@ abstract class _Food implements Food {
       required String author,
       required String refrigerator,
       required int count,
+      required StorageMethod storageMethod,
       @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-          required DateTime expirationDate,
-      required FoodCategory category}) = _$_Food;
+          required DateTime expirationAt}) = _$_Food;
 
   factory _Food.fromJson(Map<String, dynamic> json) = _$_Food.fromJson;
 
@@ -305,10 +305,10 @@ abstract class _Food implements Food {
   @override
   int get count => throw _privateConstructorUsedError;
   @override
-  @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
-  DateTime get expirationDate => throw _privateConstructorUsedError;
+  StorageMethod get storageMethod => throw _privateConstructorUsedError;
   @override
-  FoodCategory get category => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
+  DateTime get expirationAt => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$FoodCopyWith<_Food> get copyWith => throw _privateConstructorUsedError;

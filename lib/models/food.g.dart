@@ -13,8 +13,8 @@ _$_Food _$_$_FoodFromJson(Map<String, dynamic> json) {
     author: json['author'] as String,
     refrigerator: json['refrigerator'] as String,
     count: json['count'] as int,
-    expirationDate: dateTimeFromJson(json['expirationDate'] as Timestamp?),
-    category: _$enumDecode(_$FoodCategoryEnumMap, json['category']),
+    storageMethod: _$enumDecode(_$StorageMethodEnumMap, json['storageMethod']),
+    expirationAt: dateTimeFromJson(json['expirationAt'] as Timestamp?),
   );
 }
 
@@ -24,8 +24,8 @@ Map<String, dynamic> _$_$_FoodToJson(_$_Food instance) => <String, dynamic>{
       'author': instance.author,
       'refrigerator': instance.refrigerator,
       'count': instance.count,
-      'expirationDate': dateTimeToJson(instance.expirationDate),
-      'category': _$FoodCategoryEnumMap[instance.category],
+      'storageMethod': _$StorageMethodEnumMap[instance.storageMethod],
+      'expirationAt': dateTimeToJson(instance.expirationAt),
     };
 
 K _$enumDecode<K, V>(
@@ -54,8 +54,8 @@ K _$enumDecode<K, V>(
   ).key;
 }
 
-const _$FoodCategoryEnumMap = {
-  FoodCategory.ROOM_TEMPERATURE: 'ROOM_TEMPERATURE',
-  FoodCategory.FRIDGE: 'FRIDGE',
-  FoodCategory.FREEZER: 'FREEZER',
+const _$StorageMethodEnumMap = {
+  StorageMethod.roomTemperature: 'roomTemperature',
+  StorageMethod.refrigerate: 'refrigerate',
+  StorageMethod.freeze: 'freeze',
 };
