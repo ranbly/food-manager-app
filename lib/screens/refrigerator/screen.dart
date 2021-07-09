@@ -60,6 +60,7 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,
+          iconTheme: IconThemeData(color: Colors.black),
           title: Text(widget.refrigerator.name),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(kTextTabBarHeight),
