@@ -74,4 +74,16 @@ class FoodsController extends GetxController {
     final document = foodCollectionRef.doc();
     await document.set(data);
   }
+
+  /// 섭취
+  intake({
+    required Food food,
+    required int count,
+  }) async {
+    final batch = FirebaseFirestore.instance.batch();
+    batch.update(foodCollectionRef.doc(food.id), {
+      'count': FieldValue.increment(-count),
+    });
+    await batch.commit();
+  }
 }
