@@ -42,7 +42,20 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
       length: 4,
       child: Scaffold(
         backgroundColor: Colors.white,
-        endDrawer: Drawer(),
+        endDrawer: Drawer(
+          child: Column(
+            children: [
+              DrawerHeader(child: Container()),
+              ListTile(
+                dense: true,
+                title: Text('설정'),
+                onTap: () {
+                  Get.toNamed('/setting');
+                },
+              ),
+            ],
+          ),
+        ),
         appBar: AppBar(
           elevation: 0,
           brightness: Brightness.light,

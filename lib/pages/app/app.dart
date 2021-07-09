@@ -6,6 +6,7 @@ import 'package:food_manager_app/controllers/home.dart';
 import 'package:food_manager_app/controllers/refrigerators.dart';
 import 'package:food_manager_app/pages/food/create.dart';
 import 'package:food_manager_app/pages/home/home.dart';
+import 'package:food_manager_app/pages/setting/settig.dart';
 import 'package:food_manager_app/pages/splash/splash.dart';
 import 'package:get/get.dart';
 
@@ -45,6 +46,7 @@ class App extends StatelessWidget {
           name: '/food/new',
           page: () => CreateFoodPage(),
         ),
+        GetPage(name: '/setting', page: () => SettingPage()),
       ],
       builder: EasyLoading.init(),
     );
