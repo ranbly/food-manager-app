@@ -42,18 +42,20 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
       length: 4,
       child: Scaffold(
         backgroundColor: Colors.white,
+        endDrawer: Drawer(),
         appBar: AppBar(
-          shadowColor: Colors.transparent,
+          elevation: 0,
           brightness: Brightness.light,
+          centerTitle: true,
           title: Text(widget.refrigerator.name),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(30),
+            preferredSize: Size.fromHeight(kTextTabBarHeight),
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 36),
+              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: TabBar(
-                  labelPadding: EdgeInsets.symmetric(horizontal: 0),
+                  labelPadding: EdgeInsets.symmetric(horizontal: 12),
                   indicatorSize: TabBarIndicatorSize.label,
                   isScrollable: true,
                   labelColor: Color(0xFF3B4655),
@@ -64,22 +66,10 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
                   unselectedLabelStyle:
                       TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   tabs: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Tab(text: '전체'),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Tab(text: '냉장고'),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Tab(text: '냉동실'),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Tab(text: '실온'),
-                    ),
+                    Tab(text: '전체'),
+                    Tab(text: '냉장고'),
+                    Tab(text: '냉동실'),
+                    Tab(text: '실온')
                   ],
                 ),
               ),
