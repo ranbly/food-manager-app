@@ -57,4 +57,11 @@ class MemosController extends GetxController {
     final document = FirebaseFirestore.instance.collection('memos').doc();
     await document.set(data);
   }
+
+  checkMemo(String memoId) async {
+    await FirebaseFirestore.instance
+        .collection('memos')
+        .doc(memoId)
+        .update({'checked': true});
+  }
 }

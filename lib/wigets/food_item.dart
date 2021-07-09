@@ -13,7 +13,7 @@ class FoodItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          DayChip(day: food.expirationDate),
+          // DayChip(day: food.expirationDate),
           Padding(
             padding: EdgeInsets.only(
               left: 12,

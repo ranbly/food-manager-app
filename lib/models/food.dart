@@ -1,23 +1,25 @@
 import 'package:food_manager_app/enum/food_category.dart';
+import 'package:food_manager_app/models/converter/timestamp_converter.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Food {
-  String name;
-  int expirationDate;
-  int count;
-  FoodCategory category;
+part 'food.freezed.dart';
 
-  Food(
-      {required this.name,
-      required this.expirationDate,
-      required this.count,
-      required this.category});
+part 'food.g.dart';
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': this.name,
-      'expirationDate': this.expirationDate,
-      'count': this.count,
-      'category': this.category.value,
-    };
-  }
+@freezed
+class Food with _$Food {
+  @JsonSerializable(explicitToJson: true)
+  factory Food({
+    required String id,
+    required String name,
+    required String author,
+    required String refrigerator,
+    required int count,
+    @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
+        required DateTime expirationDate,
+    required FoodCategory category,
+  }) = _Food;
+
+  factory Food.fromJson(Map<String, dynamic> json) => _$FoodFromJson(json);
 }

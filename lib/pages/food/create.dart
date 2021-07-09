@@ -6,14 +6,14 @@ import 'package:food_manager_app/common/app_colors.dart';
 import 'package:food_manager_app/enum/food_category.dart';
 import 'package:food_manager_app/models/food.dart';
 
-class CreateFood extends StatefulWidget {
+class CreateFoodPage extends StatefulWidget {
   static final routePath = '/food/new';
 
   @override
-  _CreateFoodState createState() => _CreateFoodState();
+  _CreateFoodPageState createState() => _CreateFoodPageState();
 }
 
-class _CreateFoodState extends State<CreateFood> {
+class _CreateFoodPageState extends State<CreateFoodPage> {
   final _formKey = GlobalKey<FormState>();
   final controller = TextEditingController();
 
@@ -23,25 +23,25 @@ class _CreateFoodState extends State<CreateFood> {
   FoodCategory category = FoodCategory.FRIDGE;
 
   Future<void> _addFoodItem() async {
-    if (nameController.value.text == '' ||
-        expirationDateController.value.text == '' ||
-        countController.value.text == '') {
-      return;
-    }
-    var foodItem = Food(
-      name: nameController.value.text,
-        expirationDate:  int.parse(expirationDateController.value.text),
-      count: int.parse(countController.value.text),
-      category: category,
-    );
-
-    CollectionReference foods = FirebaseFirestore.instance.collection('foods');
-    try {
-      await foods.add(foodItem.toJson());
-      print('Add foods ${foodItem.toJson()}');
-    } catch (e) {
-      print("Failed to add foods: $e");
-    }
+    // if (nameController.value.text == '' ||
+    //     expirationDateController.value.text == '' ||
+    //     countController.value.text == '') {
+    //   return;
+    // }
+    // var foodItem = Food(
+    //   name: nameController.value.text,
+    //   expirationDate: int.parse(expirationDateController.value.text),
+    //   count: int.parse(countController.value.text),
+    //   category: category,
+    // );
+    //
+    // CollectionReference foods = FirebaseFirestore.instance.collection('foods');
+    // try {
+    //   await foods.add(foodItem.toJson());
+    //   print('Add foods ${foodItem.toJson()}');
+    // } catch (e) {
+    //   print("Failed to add foods: $e");
+    // }
   }
 
   Widget _buildCategoryGroup(BuildContext context) {

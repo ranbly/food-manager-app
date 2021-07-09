@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_manager_app/controllers/foods.dart';
 import 'package:food_manager_app/controllers/memos.dart';
 import 'package:food_manager_app/enum/food_category.dart';
 import 'package:food_manager_app/models/food.dart';
 import 'package:food_manager_app/models/refrigerator.dart';
-import 'package:food_manager_app/pages/create_food.dart';
 import 'package:food_manager_app/wigets/food_item.dart';
 import 'package:food_manager_app/wigets/memo_input.dart';
 import 'package:food_manager_app/wigets/memo_item.dart';
@@ -20,6 +20,7 @@ class RefrigeratorScreen extends StatefulWidget {
     required this.refrigerator,
   }) : super(key: key) {
     Get.put(MemosController(refrigerator: refrigerator));
+    Get.put(FoodsController(refrigerator: refrigerator));
   }
 
   @override
@@ -122,7 +123,7 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
                   )),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, CreateFood.routePath);
+            Get.toNamed('/food/new');
           },
           tooltip: 'Increment',
           child: Icon(Icons.add),
@@ -135,58 +136,59 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
   Widget _buildFoodListContainer({FoodCategory? category}) {
     return Container();
 
-    return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('foods')
-            .where('category', isEqualTo: category?.value)
-            .snapshots(),
-        builder: (context, snapshot) {
-          final docs = snapshot.data?.docs ?? [];
-          return Container(
-              child: Column(children: [
-            ...docs.sublist(0, min(5, docs.length)).map((doc) => FoodItem(
-                  Food(
-                      name: doc.get('name'),
-                      expirationDate: doc.get('expirationDate'),
-                      count: doc.get('count'),
-                      category: FoodCategory.FREEZER),
-                )),
-            Expanded(child: Container()),
-            TextButton(
-                onPressed: _toggleList,
-                child: Text('전체보기',
-                    style: TextStyle(
-                        color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
-          ]));
-        });
+    // return StreamBuilder<QuerySnapshot>(
+    //     stream: FirebaseFirestore.instance
+    //         .collection('foods')
+    //         .where('category', isEqualTo: category?.value)
+    //         .snapshots(),
+    //     builder: (context, snapshot) {
+    //       final docs = snapshot.data?.docs ?? [];
+    //       return Container(
+    //           child: Column(children: [
+    //         ...docs.sublist(0, min(5, docs.length)).map((doc) => FoodItem(
+    //               Food(
+    //                   name: doc.get('name'),
+    //                   expirationDate: doc.get('expirationDate'),
+    //                   count: doc.get('count'),
+    //                   category: FoodCategory.FREEZER),
+    //             )),
+    //         Expanded(child: Container()),
+    //         TextButton(
+    //             onPressed: _toggleList,
+    //             child: Text('전체보기',
+    //                 style: TextStyle(
+    //                     color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
+    //       ]));
+    //     });
   }
 
   Widget __buildFoodFullListContainer() {
-    return SafeArea(
-      child: Column(children: [
-        Expanded(
-            child: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: [
-                FoodItem(
-                  Food(
-                      name: '딸기',
-                      expirationDate: 1,
-                      count: 1,
-                      category: FoodCategory.ROOM_TEMPERATURE),
-                )
-              ],
-            ),
-          ),
-        )),
-        TextButton(
-            onPressed: _toggleList,
-            child: Text('접기',
-                style: TextStyle(
-                    color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
-      ]),
-    );
+    return Container();
+    // return SafeArea(
+    //   child: Column(children: [
+    //     Expanded(
+    //         child: SingleChildScrollView(
+    //       child: Container(
+    //         child: Column(
+    //           children: [
+    //             FoodItem(
+    //               Food(
+    //                   name: '딸기',
+    //                   expirationDate: 1,
+    //                   count: 1,
+    //                   category: FoodCategory.ROOM_TEMPERATURE),
+    //             )
+    //           ],
+    //         ),
+    //       ),
+    //     )),
+    //     TextButton(
+    //         onPressed: _toggleList,
+    //         child: Text('접기',
+    //             style: TextStyle(
+    //                 color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
+    //   ]),
+    // );
   }
 
   bool isListOpened = false;
