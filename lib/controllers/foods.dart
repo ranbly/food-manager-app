@@ -26,11 +26,11 @@ class FoodsController extends GetxController {
     super.onInit();
 
     // 현재  상태 업데이트
-    Query query =
-        foodCollectionRef.where('refrigerator', isEqualTo: refrigerator.id);
+    Query query = foodCollectionRef
+        .where('refrigerator', isEqualTo: refrigerator.id)
+        .where('count', isGreaterThan: 0);
     if (storageMethod != null) {
       query = query.where('storageMethod', isEqualTo: storageMethod?.tag);
-      print('Query Check : storageMethod - ${storageMethod?.tag}');
     }
 
     _subscription = query
@@ -53,12 +53,12 @@ class FoodsController extends GetxController {
     super.onClose();
   }
 
-  addFood({
-    required String name,
-    required StorageMethod storageMethod,
-    required DateTime expirationAt,
-    required int count,
-  }) async {
+  addFood(
+      {required String name,
+      required StorageMethod storageMethod,
+      required DateTime expirationAt,
+      required int count,
+      String? memo}) async {
     final food = Food(
       id: '',
       author: MeService.to.me.value!.id,
@@ -67,6 +67,7 @@ class FoodsController extends GetxController {
       count: count,
       expirationAt: expirationAt,
       name: name,
+      memo: memo ?? '',
     );
     final data = food.toJson();
     data.remove('id');

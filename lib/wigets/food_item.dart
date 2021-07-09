@@ -25,15 +25,13 @@ class FoodItem extends StatelessWidget {
           children: [
             DayChip(date: food.expirationAt),
             Padding(
-              padding: EdgeInsets.only(
-                left: 12,
-              ),
+              padding: EdgeInsets.only(left: 12, right: 4),
               child: Text(
                 food.name,
                 style: TextStyle(fontSize: 15),
               ),
             ),
-            if ((food.count) > 1) Text('${food.count}')
+            if (food.count > 1) Text('(${food.count})')
           ],
         ),
       ),

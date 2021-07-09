@@ -1,11 +1,9 @@
-import 'package:food_manager_app/enum/food_category.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_manager_app/enum/storage_method.dart';
 import 'package:food_manager_app/models/converter/timestamp_converter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 part 'food.freezed.dart';
-
 part 'food.g.dart';
 
 @freezed
@@ -18,6 +16,7 @@ class Food with _$Food {
     required String refrigerator,
     required int count,
     required StorageMethod storageMethod,
+    String? memo,
     @JsonKey(fromJson: dateTimeFromJson, toJson: dateTimeToJson)
         required DateTime expirationAt,
   }) = _Food;

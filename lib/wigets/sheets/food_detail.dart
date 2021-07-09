@@ -48,7 +48,7 @@ class FoodDetailSheet extends StatelessWidget {
                 Row(
                   children: [
                     Container(width: 80, child: Text('메모')),
-                    Text(food.count.toString())
+                    Text(food.memo ?? ''),
                   ],
                 )
               ],
