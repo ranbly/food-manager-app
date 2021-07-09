@@ -1,35 +1,33 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_manager_app/controllers/memos.dart';
 import 'package:food_manager_app/enum/food_category.dart';
 import 'package:food_manager_app/models/food.dart';
-import 'package:food_manager_app/models/memo.dart';
+import 'package:food_manager_app/models/refrigerator.dart';
+import 'package:food_manager_app/pages/create_food.dart';
 import 'package:food_manager_app/wigets/food_item.dart';
 import 'package:food_manager_app/wigets/memo_input.dart';
 import 'package:food_manager_app/wigets/memo_item.dart';
+import 'package:get/get.dart';
 
-import 'create_food.dart';
+class RefrigeratorScreen extends StatefulWidget {
+  final Refrigerator refrigerator;
 
-class Main extends StatefulWidget {
-  Main({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  RefrigeratorScreen({
+    Key? key,
+    required this.refrigerator,
+  }) : super(key: key) {
+    Get.put(MemosController(refrigerator: refrigerator));
+  }
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _RefrigeratorScreenState createState() => _RefrigeratorScreenState();
 }
 
-class _MainPageState extends State<Main> {
-  bool isListOpened = false;
-  var memoList = [Memo(1, '1'), Memo(3, '테스트')];
-
-  void _toggleList() {
-    setState(() {
-      isListOpened = !isListOpened;
-    });
-  }
+class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
+  MemosController get memosController => Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +38,7 @@ class _MainPageState extends State<Main> {
         appBar: AppBar(
           shadowColor: Colors.transparent,
           brightness: Brightness.light,
-          title: Text(widget.title),
+          title: Text(widget.refrigerator.name),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(30),
             child: Padding(
@@ -108,27 +106,7 @@ class _MainPageState extends State<Main> {
                                 category: FoodCategory.ROOM_TEMPERATURE)
                           ]),
                         ),
-                        Container(
-                          child: Container(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 32, horizontal: 36),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('메모',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold)),
-                                  ...memoList
-                                      .map((memo) => MemoItem(memo: memo)),
-                                  MemoInput()
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
+                        _buildMemos(),
                       ],
                     ),
                   )
@@ -155,6 +133,8 @@ class _MainPageState extends State<Main> {
 
   //steam builder, future builder
   Widget _buildFoodListContainer({FoodCategory? category}) {
+    return Container();
+
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('foods')
@@ -206,6 +186,38 @@ class _MainPageState extends State<Main> {
                 style: TextStyle(
                     color: Color(0xFF99A6B7), fontWeight: FontWeight.bold)))
       ]),
+    );
+  }
+
+  bool isListOpened = false;
+  var memoList = [];
+
+  void _toggleList() {
+    setState(() {
+      isListOpened = !isListOpened;
+    });
+  }
+
+  Widget _buildMemos() {
+    return Obx(
+      () => Container(
+        child: Container(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 32, horizontal: 36),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('메모',
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                ...memosController.memos.map((memo) => MemoItem(memo: memo)),
+                MemoInput()
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -13,7 +13,7 @@ class MemoItem extends StatelessWidget {
         child: Row(children: [
       Checkbox(value: false, onChanged: null),
       Text(
-        memo.text,
+        memo.content,
         style: TextStyle(color: Color(0xFF3B4655), fontSize: 17),
       )
     ]));
