@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:food_manager_app/controllers/foods.dart';
+import 'package:food_manager_app/controllers/home.dart';
 import 'package:food_manager_app/controllers/memos.dart';
 import 'package:food_manager_app/controllers/refrigerators.dart';
 import 'package:food_manager_app/enum/storage_method.dart';
@@ -41,7 +42,7 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
   bool isListOpened = false;
 
   // 냉장고 설정 Expandable Controller
-  final _refrigeratorExpandableController = ExpandableController();
+  bool _refrigeratorManageOpened = false;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,7 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
               title: GestureDetector(
                 onTap: () {
                   setState(() {
-                    _refrigeratorExpandableController.toggle();
+                    _refrigeratorManageOpened = !_refrigeratorManageOpened;
                   });
                 },
                 child: Row(
@@ -118,46 +119,64 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
               child: Icon(Icons.add),
             ),
           ),
-          SafeArea(
-            child: Container(
-              alignment: Alignment.topCenter,
-              margin: EdgeInsets.only(top: kToolbarHeight),
-              child: Expandable(
-                controller: _refrigeratorExpandableController,
-                collapsed: Container(),
-                expanded: Container(
-                  padding: EdgeInsets.all(20),
-                  constraints: BoxConstraints(maxWidth: 240),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Color(0xFFD9DFE6)),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ...Get.find<RefrigeratorsController>().refrigerators.map(
-                            (element) => TextButton(
-                              style: TextButton.styleFrom(
-                                textStyle: TextStyle(fontSize: 17),
-                                primary: Color(0xFF26303C),
+          IgnorePointer(
+            ignoring: !_refrigeratorManageOpened,
+            child: SafeArea(
+              child: AnimatedOpacity(
+                duration: Duration(milliseconds: 300),
+                opacity: _refrigeratorManageOpened ? 1 : 0,
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  margin: EdgeInsets.only(top: kToolbarHeight),
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    constraints: BoxConstraints(maxWidth: 240),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Color(0xFFD9DFE6)),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ...Get.find<RefrigeratorsController>()
+                            .refrigerators
+                            .map(
+                              (element) => TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle: TextStyle(fontSize: 17),
+                                  primary: Color(0xFF26303C),
+                                ),
+                                onPressed: () {
+                                  final homeController =
+                                      Get.find<HomeController>();
+                                  homeController
+                                      .changeCurrentRefrigerator(element);
+                                },
+                                child: Text(element.name),
                               ),
-                              onPressed: () {},
-                              child: Text(element.name),
                             ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            textStyle: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            primary: Color(0xFF3A83E3),
                           ),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          textStyle: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          primary: Color(0xFF3A83E3),
+                          onPressed: () {
+                            setState(() {
+                              _refrigeratorManageOpened = false;
+                            });
+                            final homeController = Get.find<HomeController>();
+                            Get.toNamed(
+                              '/refrigerators/${homeController.currentRefrigerator.value!.id}/manage',
+                            );
+                          },
+                          child: Text('냉장고 관리'),
                         ),
-                        onPressed: () {},
-                        child: Text('냉장고 관리'),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -287,5 +306,15 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    Get.delete<MemosController>();
+    <StorageMethod?>[null, ...StorageMethod.values].forEach((element) {
+      Get.delete<FoodsController>(force: true, tag: element?.tag);
+    });
+
+    super.dispose();
   }
 }

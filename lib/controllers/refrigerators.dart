@@ -32,6 +32,10 @@ class RefrigeratorsController extends GetxController {
     });
   }
 
+  Refrigerator getRefrigerator(String id) {
+    return refrigerators.firstWhere((element) => element.id == id);
+  }
+
   @override
   void onClose() {
     _subscription?.cancel();

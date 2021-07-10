@@ -3,9 +3,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:food_manager_app/bindings/app.dart';
 import 'package:food_manager_app/common/app_colors.dart';
 import 'package:food_manager_app/controllers/home.dart';
+import 'package:food_manager_app/controllers/refrigerator.dart';
 import 'package:food_manager_app/controllers/refrigerators.dart';
 import 'package:food_manager_app/pages/food/create.dart';
 import 'package:food_manager_app/pages/home/home.dart';
+import 'package:food_manager_app/pages/refrigerator/manage.dart';
 import 'package:food_manager_app/pages/setting/settig.dart';
 import 'package:food_manager_app/pages/splash/splash.dart';
 import 'package:get/get.dart';
@@ -47,6 +49,10 @@ class App extends StatelessWidget {
         GetPage(
           name: '/food/new',
           page: () => CreateFoodPage(),
+        ),
+        GetPage(
+          name: '/refrigerators/:id/manage',
+          page: () => RefrigeratorManagePage(),
         ),
         GetPage(name: '/setting', page: () => SettingPage()),
       ],

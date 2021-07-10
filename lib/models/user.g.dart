@@ -9,6 +9,7 @@ part of 'user.dart';
 _$_User _$_$_UserFromJson(Map<String, dynamic> json) {
   return _$_User(
     id: json['id'] as String,
+    name: json['name'] as String?,
     refrigerators: (json['refrigerators'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList(),
@@ -18,6 +19,7 @@ _$_User _$_$_UserFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$_$_UserToJson(_$_User instance) => <String, dynamic>{
       'id': instance.id,
+      'name': instance.name,
       'refrigerators': instance.refrigerators,
       'state': _$UserStateEnumMap[instance.state],
     };

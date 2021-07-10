@@ -21,22 +21,25 @@ class HomePage extends StatelessWidget {
     return Stack(
       children: [
         Obx(
-          () => !homeController.isInitialized
-              ? Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    Expanded(
-                      child: RefrigeratorScreen(
-                        refrigerator: homeController.currentRefrigerator.value!,
+          () {
+            return !homeController.isInitialized
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                    children: [
+                      Expanded(
+                        child: RefrigeratorScreen(
+                          refrigerator:
+                              homeController.currentRefrigerator.value!,
+                        ),
                       ),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      height: 50,
-                      child: AdWidget(ad: _bottomBanner),
-                    )
-                  ],
-                ),
+                      Container(
+                        color: Colors.white,
+                        height: 50,
+                        child: AdWidget(ad: _bottomBanner),
+                      )
+                    ],
+                  );
+          },
         ),
       ],
     );

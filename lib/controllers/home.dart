@@ -26,4 +26,10 @@ class HomeController extends GetxController {
       }
     });
   }
+
+  changeCurrentRefrigerator(Refrigerator refrigerator) async {
+    this.currentRefrigerator.value = null;
+    await 0.1.delay();
+    this.currentRefrigerator.value = refrigerator;
+  }
 }
