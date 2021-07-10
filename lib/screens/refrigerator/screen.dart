@@ -36,6 +36,8 @@ class RefrigeratorScreen extends StatefulWidget {
 class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
   MemosController get memosController => Get.find();
 
+  bool isListOpened = false;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -90,48 +92,7 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
             ),
           ),
         ),
-        body: !isListOpened
-            ? LayoutBuilder(builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(top: 16),
-                        color: Color(0xFFFAFBFF),
-                        height: constraints.maxHeight / 2,
-                        child: TabBarView(
-                          children: [
-                            _buildFoodListSummary(),
-                            _buildFoodListSummary(
-                                storageMethod: StorageMethod.refrigerate),
-                            _buildFoodListSummary(
-                                storageMethod: StorageMethod.freeze),
-                            _buildFoodListSummary(
-                                storageMethod: StorageMethod.roomTemperature)
-                          ],
-                        ),
-                      ),
-                      _buildMemos(),
-                    ],
-                  ),
-                );
-              })
-            : Container(
-                padding: EdgeInsets.only(top: 16),
-                color: Color(0xFFFAFBFF),
-                child: TabBarView(children: [
-                  _buildFoodListFull(),
-                  _buildFoodListFull(
-                    storageMethod: StorageMethod.refrigerate,
-                  ),
-                  _buildFoodListFull(
-                    storageMethod: StorageMethod.freeze,
-                  ),
-                  _buildFoodListFull(
-                    storageMethod: StorageMethod.roomTemperature,
-                  )
-                ]),
-              ),
+        body: _buildBody(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Get.toNamed('/food/new');
@@ -141,6 +102,51 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildBody() {
+    return !isListOpened
+        ? LayoutBuilder(builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(top: 16),
+                    color: Color(0xFFFAFBFF),
+                    height: constraints.maxHeight / 2,
+                    child: TabBarView(
+                      children: [
+                        _buildFoodListSummary(),
+                        _buildFoodListSummary(
+                            storageMethod: StorageMethod.refrigerate),
+                        _buildFoodListSummary(
+                            storageMethod: StorageMethod.freeze),
+                        _buildFoodListSummary(
+                            storageMethod: StorageMethod.roomTemperature)
+                      ],
+                    ),
+                  ),
+                  _buildMemos(),
+                ],
+              ),
+            );
+          })
+        : Container(
+            padding: EdgeInsets.only(top: 16),
+            color: Color(0xFFFAFBFF),
+            child: TabBarView(children: [
+              _buildFoodListFull(),
+              _buildFoodListFull(
+                storageMethod: StorageMethod.refrigerate,
+              ),
+              _buildFoodListFull(
+                storageMethod: StorageMethod.freeze,
+              ),
+              _buildFoodListFull(
+                storageMethod: StorageMethod.roomTemperature,
+              )
+            ]),
+          );
   }
 
   /// 최대 5개 까지 음식 리스트를 보여주는 리스트
@@ -166,7 +172,6 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
   /// 모든 음식 리스트를 보여주는 리스트
   Widget _buildFoodListFull({StorageMethod? storageMethod}) {
     final foodsController = Get.find<FoodsController>(tag: storageMethod?.tag);
-
     return Obx(
       () => SafeArea(
         child: Column(children: [
@@ -189,9 +194,6 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
       ),
     );
   }
-
-  bool isListOpened = false;
-  var memoList = [];
 
   void _toggleList() {
     setState(() {
