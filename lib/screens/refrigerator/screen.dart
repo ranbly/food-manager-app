@@ -94,10 +94,7 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
         ),
         body: _buildBody(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Get.toNamed('/food/new');
-          },
-          tooltip: 'Increment',
+          onPressed: () => Get.toNamed('/food/new'),
           child: Icon(Icons.add),
         ),
       ),
@@ -113,7 +110,7 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
                   Container(
                     padding: EdgeInsets.only(top: 16),
                     color: Color(0xFFFAFBFF),
-                    height: constraints.maxHeight / 2,
+                    height: 50 * 5 + 56,
                     child: TabBarView(
                       children: [
                         _buildFoodListSummary(),

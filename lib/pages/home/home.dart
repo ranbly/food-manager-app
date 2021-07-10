@@ -15,8 +15,21 @@ class HomePage extends StatelessWidget {
         Obx(
           () => !homeController.isInitialized
               ? Center(child: CircularProgressIndicator())
-              : RefrigeratorScreen(
-                  refrigerator: homeController.currentRefrigerator.value!,
+              : Column(
+                  children: [
+                    Expanded(
+                      child: RefrigeratorScreen(
+                        refrigerator: homeController.currentRefrigerator.value!,
+                      ),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      height: 50,
+                      child: Container(
+                        color: Colors.red,
+                      ),
+                    )
+                  ],
                 ),
         ),
       ],
