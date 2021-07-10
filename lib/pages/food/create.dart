@@ -6,6 +6,7 @@ import 'package:food_manager_app/common/app_colors.dart';
 import 'package:food_manager_app/controllers/foods.dart';
 import 'package:food_manager_app/enum/storage_method.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class CreateFoodPage extends StatefulWidget {
   static final routePath = '/food/new';
@@ -15,6 +16,9 @@ class CreateFoodPage extends StatefulWidget {
 }
 
 class _CreateFoodPageState extends State<CreateFoodPage> {
+  // Date Format
+  final _dateFormat = DateFormat('yy-MM-dd');
+
   final _formKey = GlobalKey<FormState>();
 
   // Food Form Item
@@ -65,6 +69,7 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                               title: '유통기한',
                               required: true,
                               child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
                                 onTap: () async {
                                   final date = await showDatePicker(
                                     context: context,
@@ -82,8 +87,9 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
                                 child: IgnorePointer(
                                   child: TextFormField(
                                     key: ValueKey(_expiredAt),
-                                    initialValue:
-                                        '${_expiredAt?.toIso8601String() ?? '날짜 없음'}',
+                                    initialValue: _expiredAt != null
+                                        ? _dateFormat.format(_expiredAt!)
+                                        : '날짜 없음',
                                     decoration: InputDecoration(
                                       hintText: '날짜를 선택하세요',
                                     ),
