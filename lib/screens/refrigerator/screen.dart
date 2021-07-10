@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:food_manager_app/controllers/foods.dart';
 import 'package:food_manager_app/controllers/memos.dart';
+import 'package:food_manager_app/controllers/refrigerators.dart';
 import 'package:food_manager_app/enum/storage_method.dart';
 import 'package:food_manager_app/models/refrigerator.dart';
 import 'package:food_manager_app/wigets/food_item.dart';
@@ -38,65 +40,130 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
 
   bool isListOpened = false;
 
+  // 냉장고 설정 Expandable Controller
+  final _refrigeratorExpandableController = ExpandableController();
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        endDrawer: Drawer(
-          child: Column(
-            children: [
-              DrawerHeader(child: Container()),
-              ListTile(
-                dense: true,
-                title: Text('설정'),
-                onTap: () {
-                  Get.toNamed('/setting');
-                },
+      child: Stack(
+        children: [
+          Scaffold(
+            backgroundColor: Colors.white,
+            endDrawer: Drawer(
+              child: Column(
+                children: [
+                  DrawerHeader(child: Container()),
+                  ListTile(
+                    dense: true,
+                    title: Text('설정'),
+                    onTap: () {
+                      Get.toNamed('/setting');
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        appBar: AppBar(
-          elevation: 0,
-          brightness: Brightness.light,
-          centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.black),
-          title: Text(widget.refrigerator.name),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(kTextTabBarHeight),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: TabBar(
-                  labelPadding: EdgeInsets.symmetric(horizontal: 12),
-                  indicatorSize: TabBarIndicatorSize.label,
-                  isScrollable: true,
-                  labelColor: Color(0xFF3B4655),
-                  indicatorColor: Color(0xFF3B4655),
-                  unselectedLabelColor: Color(0xFFB2BDC9),
-                  labelStyle:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  unselectedLabelStyle:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  tabs: [
-                    Tab(text: '전체'),
-                    Tab(text: '냉장고'),
-                    Tab(text: '냉동실'),
-                    Tab(text: '실온')
+            ),
+            appBar: AppBar(
+              elevation: 0,
+              brightness: Brightness.light,
+              centerTitle: true,
+              iconTheme: IconThemeData(color: Colors.black),
+              title: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _refrigeratorExpandableController.toggle();
+                  });
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(widget.refrigerator.name),
+                    Icon(Icons.arrow_drop_down),
                   ],
+                ),
+              ),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(kTextTabBarHeight),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      labelPadding: EdgeInsets.symmetric(horizontal: 12),
+                      indicatorSize: TabBarIndicatorSize.label,
+                      isScrollable: true,
+                      labelColor: Color(0xFF3B4655),
+                      indicatorColor: Color(0xFF3B4655),
+                      unselectedLabelColor: Color(0xFFB2BDC9),
+                      labelStyle:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      unselectedLabelStyle:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      tabs: [
+                        Tab(text: '전체'),
+                        Tab(text: '냉장고'),
+                        Tab(text: '냉동실'),
+                        Tab(text: '실온')
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            body: _buildBody(),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => Get.toNamed('/food/new'),
+              child: Icon(Icons.add),
+            ),
+          ),
+          SafeArea(
+            child: Container(
+              alignment: Alignment.topCenter,
+              margin: EdgeInsets.only(top: kToolbarHeight),
+              child: Expandable(
+                controller: _refrigeratorExpandableController,
+                collapsed: Container(),
+                expanded: Container(
+                  padding: EdgeInsets.all(20),
+                  constraints: BoxConstraints(maxWidth: 240),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Color(0xFFD9DFE6)),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...Get.find<RefrigeratorsController>().refrigerators.map(
+                            (element) => TextButton(
+                              style: TextButton.styleFrom(
+                                textStyle: TextStyle(fontSize: 17),
+                                primary: Color(0xFF26303C),
+                              ),
+                              onPressed: () {},
+                              child: Text(element.name),
+                            ),
+                          ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          primary: Color(0xFF3A83E3),
+                        ),
+                        onPressed: () {},
+                        child: Text('냉장고 관리'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        body: _buildBody(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Get.toNamed('/food/new'),
-          child: Icon(Icons.add),
-        ),
+        ],
       ),
     );
   }
