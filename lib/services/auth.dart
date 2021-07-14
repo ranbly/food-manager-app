@@ -90,7 +90,8 @@ class AuthService extends GetxController {
           } else {
             // Get.offAll(() => SignUpCompletePage());
           }
-          Get.offAllNamed('/home');
+
+          if (Get.currentRoute != '/home') Get.offAllNamed('/home');
         } else {
           Get.offAll(() => LoginPage());
         }

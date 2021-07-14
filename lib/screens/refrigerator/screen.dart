@@ -20,14 +20,21 @@ class RefrigeratorScreen extends StatefulWidget {
     Key? key,
     required this.refrigerator,
   }) : super(key: key) {
-    Get.put(MemosController(refrigerator: refrigerator));
+    Get.lazyPut(
+      () => MemosController(refrigerator: refrigerator),
+      tag: refrigerator.id,
+      fenix: true,
+    );
 
     final methods = <StorageMethod?>[null, ...StorageMethod.values];
     methods.forEach((element) {
-      Get.put(
-        FoodsController(refrigerator: refrigerator, storageMethod: element),
-        tag: element?.tag,
-        permanent: true,
+      Get.lazyPut(
+        () => FoodsController(
+          refrigerator: refrigerator,
+          storageMethod: element,
+        ),
+        tag: '${refrigerator.id}-${element?.tag}',
+        fenix: true,
       );
     });
   }
@@ -37,7 +44,7 @@ class RefrigeratorScreen extends StatefulWidget {
 }
 
 class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
-  MemosController get memosController => Get.find();
+  MemosController get memosController => Get.find(tag: widget.refrigerator.id);
 
   bool isListOpened = false;
 
@@ -234,7 +241,9 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
 
   /// 최대 5개 까지 음식 리스트를 보여주는 리스트
   Widget _buildFoodListSummary({StorageMethod? storageMethod}) {
-    final foodsController = Get.find<FoodsController>(tag: storageMethod?.tag);
+    final foodsController = Get.find<FoodsController>(
+      tag: '${widget.refrigerator.id}-${storageMethod?.tag}',
+    );
     return Obx(
       () => Column(
         children: [
@@ -254,7 +263,9 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
 
   /// 모든 음식 리스트를 보여주는 리스트
   Widget _buildFoodListFull({StorageMethod? storageMethod}) {
-    final foodsController = Get.find<FoodsController>(tag: storageMethod?.tag);
+    final foodsController = Get.find<FoodsController>(
+      tag: '${widget.refrigerator.id}-${storageMethod?.tag}',
+    );
     return Obx(
       () => SafeArea(
         child: Column(children: [
@@ -310,9 +321,12 @@ class _RefrigeratorScreenState extends State<RefrigeratorScreen> {
 
   @override
   void dispose() {
-    Get.delete<MemosController>();
+    Get.delete<MemosController>(tag: widget.refrigerator.id);
     <StorageMethod?>[null, ...StorageMethod.values].forEach((element) {
-      Get.delete<FoodsController>(force: true, tag: element?.tag);
+      Get.delete<FoodsController>(
+        force: true,
+        tag: '${widget.refrigerator.id}-${element?.tag}',
+      );
     });
 
     super.dispose();

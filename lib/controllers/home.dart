@@ -11,6 +11,8 @@ class HomeController extends GetxController {
 
   StreamSubscription? _refrigeratorSubscription;
 
+  static HomeController get to => Get.find();
+
   @override
   void onInit() {
     super.onInit();

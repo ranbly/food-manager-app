@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:food_manager_app/controllers/home.dart';
 import 'package:food_manager_app/controllers/refrigerator.dart';
 import 'package:food_manager_app/controllers/refrigerators.dart';
+import 'package:food_manager_app/models/refrigerator.dart';
 import 'package:food_manager_app/services/me.dart';
 import 'package:get/get.dart';
 
@@ -11,7 +13,11 @@ class RefrigeratorManagePage extends StatelessWidget {
   RefrigeratorController get controller => Get.find();
 
   RefrigeratorManagePage({Key? key}) : super(key: key) {
-    Get.put(RefrigeratorController(id: Get.parameters['id'] as String));
+    Get.lazyPut(
+      () => RefrigeratorController(id: Get.parameters['id'] as String),
+      tag: Get.parameters['id'] as String,
+      fenix: true,
+    );
   }
 
   bool get isAuthor => controller.author.value == MeService.to.me.value?.id;
@@ -20,98 +26,126 @@ class RefrigeratorManagePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('냉장고 관리')),
-      body: Container(
-        margin: EdgeInsets.symmetric(vertical: 36, horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              controller.refrigerator.value.name,
-              style: TextStyle(
-                color: Color(0xFF1C1C1F),
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(height: 12),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 18),
-              decoration: BoxDecoration(
-                color: Color(0xFFF8F8FD),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Obx(() => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ...controller.users.map(
-                        (element) => Container(
-                          margin: EdgeInsets.only(bottom: 14),
-                          child: Row(
-                            children: [
-                              Text(
-                                element.name ?? element.id,
-                                style: TextStyle(
-                                  color: Color(0xff556171),
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.refrigerator.value.name,
+                    style: TextStyle(
+                      color: Color(0xFF1C1C1F),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 28, vertical: 18),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF8F8FD),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Obx(() => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ...controller.users.map(
+                              (element) => Container(
+                                margin: EdgeInsets.only(bottom: 14),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      element.name ?? element.id,
+                                      style: TextStyle(
+                                        color: Color(0xff556171),
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    if (element.id ==
+                                        controller.refrigerator.value.author)
+                                      Icon(Icons.admin_panel_settings_outlined),
+                                    Spacer(),
+                                    if (isAuthor)
+                                      Text(
+                                        '삭제',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xFF939FAF),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ),
-                              if (element.id ==
-                                  controller.refrigerator.value.author)
-                                Icon(Icons.admin_panel_settings_outlined),
-                              Spacer(),
-                              if (isAuthor)
-                                Text(
-                                  '삭제',
+                            ),
+                            if (isAuthor) SizedBox(height: 4),
+                            if (isAuthor)
+                              GestureDetector(
+                                onTap: () async {
+                                  try {
+                                    EasyLoading.show();
+                                    final link =
+                                        await controller.createInviteLink();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(link),
+                                    ));
+                                  } finally {
+                                    EasyLoading.dismiss();
+                                  }
+                                },
+                                child: Text(
+                                  '+ 새 구성원 추가하기',
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xFF939FAF),
+                                    color: Color(0xFF3A83E3),
                                   ),
                                 ),
-                            ],
-                          ),
+                              ),
+                          ],
+                        )),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        primary: Color(0xFFFF5757),
+                        textStyle: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      if (isAuthor) SizedBox(height: 4),
-                      if (isAuthor)
-                        GestureDetector(
-                          onTap: () async {
-                            try {
-                              EasyLoading.show();
-                              final link = await controller.createInviteLink();
-                            } finally {
-                              EasyLoading.dismiss();
-                            }
-                          },
-                          child: Text(
-                            '+ 새 구성원 추가하기',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF3A83E3),
-                            ),
-                          ),
-                        ),
-                    ],
-                  )),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  primary: Color(0xFFFF5757),
-                  textStyle: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                      onPressed: () {},
+                      child: Text('이 냉장고 나가기'),
+                    ),
                   ),
-                ),
-                onPressed: () {},
-                child: Text('이 냉장고 나가기'),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 24 + MediaQuery.of(context).viewPadding.bottom,
+            ),
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(),
+              onPressed: () async {
+                final refrigerator = await Get.toNamed('/refrigerator-write');
+                if (refrigerator != null && refrigerator is Refrigerator) {
+                  HomeController;
+                }
+              },
+              child: Text('+ 새 냉장고 추가하기'),
+            ),
+          )
+        ],
       ),
     );
   }

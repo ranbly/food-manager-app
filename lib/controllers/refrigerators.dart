@@ -10,6 +10,11 @@ class RefrigeratorsController extends GetxController {
 
   StreamSubscription? _subscription;
 
+  final refrigeratorCollectionRef =
+      FirebaseFirestore.instance.collection('refrigerators');
+
+  static RefrigeratorsController get to => Get.find();
+
   @override
   void onInit() {
     super.onInit();
@@ -41,5 +46,20 @@ class RefrigeratorsController extends GetxController {
     _subscription?.cancel();
 
     super.onClose();
+  }
+
+  Future<Refrigerator> addRefrigerator({required String name}) async {
+    final doc = refrigeratorCollectionRef.doc();
+
+    final refrigerator = Refrigerator(
+      id: doc.id,
+      author: MeService.to.me.value!.id,
+      users: [MeService.to.me.value!.id],
+      name: name,
+    );
+
+    await doc.set(refrigerator.toJson()..remove('id'));
+
+    return refrigerator;
   }
 }

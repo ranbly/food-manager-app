@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:food_manager_app/common/app_colors.dart';
 import 'package:food_manager_app/controllers/foods.dart';
+import 'package:food_manager_app/controllers/home.dart';
 import 'package:food_manager_app/enum/storage_method.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +30,8 @@ class _CreateFoodPageState extends State<CreateFoodPage> {
   StorageMethod storageMethod = StorageMethod.refrigerate;
 
   // Foods Controller
-  FoodsController get foodsController => Get.find();
+  FoodsController get foodsController => Get.find(
+      tag: '${HomeController.to.currentRefrigerator.value?.id}-${null}');
 
   @override
   Widget build(BuildContext context) {

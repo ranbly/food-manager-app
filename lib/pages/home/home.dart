@@ -4,7 +4,7 @@ import 'package:food_manager_app/screens/refrigerator/screen.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends GetView<HomeController> {
   HomePage({Key? key}) : super(key: key);
 
   final _bottomBanner = BannerAd(
@@ -16,20 +16,17 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.find<HomeController>();
-
     return Stack(
       children: [
         Obx(
           () {
-            return !homeController.isInitialized
+            return !controller.isInitialized
                 ? Center(child: CircularProgressIndicator())
                 : Column(
                     children: [
                       Expanded(
                         child: RefrigeratorScreen(
-                          refrigerator:
-                              homeController.currentRefrigerator.value!,
+                          refrigerator: controller.currentRefrigerator.value!,
                         ),
                       ),
                       Container(
