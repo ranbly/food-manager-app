@@ -50,6 +50,9 @@ class RefrigeratorsController extends GetxController {
 
   Future<Refrigerator> addRefrigerator({required String name}) async {
     final doc = refrigeratorCollectionRef.doc();
+    final userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(MeService.to.me.value!.id);
 
     final refrigerator = Refrigerator(
       id: doc.id,
@@ -57,9 +60,31 @@ class RefrigeratorsController extends GetxController {
       users: [MeService.to.me.value!.id],
       name: name,
     );
+    final refrigeratorData = refrigerator.toJson()..remove('id');
 
-    await doc.set(refrigerator.toJson()..remove('id'));
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      await transaction.set(doc, refrigeratorData);
+      await transaction.update(userDoc, {
+        'refrigerators': FieldValue.arrayUnion([doc.id])
+      });
+    });
 
     return refrigerator;
+  }
+
+  leaveRefrigerator({required String id}) async {
+    final userDocument = FirebaseFirestore.instance
+        .collection('users')
+        .doc(MeService.to.me.value!.id);
+    final refrigeratorDocument = refrigeratorCollectionRef.doc(id);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      await transaction.update(refrigeratorDocument, {
+        'users': FieldValue.arrayRemove([MeService.to.me.value!.id]),
+      });
+      await transaction.update(userDocument, {
+        'refrigerators': FieldValue.arrayRemove([id])
+      });
+    });
   }
 }

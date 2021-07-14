@@ -1,3 +1,4 @@
+import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:food_manager_app/controllers/home.dart';
@@ -8,16 +9,16 @@ import 'package:food_manager_app/services/me.dart';
 import 'package:get/get.dart';
 
 class RefrigeratorManagePage extends StatelessWidget {
+  final String id;
+
   RefrigeratorsController get refrigeratorsController => Get.find();
 
-  RefrigeratorController get controller => Get.find();
+  RefrigeratorController get controller => Get.find(tag: id);
 
-  RefrigeratorManagePage({Key? key}) : super(key: key) {
-    Get.lazyPut(
-      () => RefrigeratorController(id: Get.parameters['id'] as String),
-      tag: Get.parameters['id'] as String,
-      fenix: true,
-    );
+  RefrigeratorManagePage({Key? key})
+      : this.id = Get.parameters['id'] as String,
+        super(key: key) {
+    Get.lazyPut(() => RefrigeratorController(id: id), tag: id, fenix: true);
   }
 
   bool get isAuthor => controller.author.value == MeService.to.me.value?.id;
@@ -120,7 +121,18 @@ class RefrigeratorManagePage extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        try {
+                          EasyLoading.show();
+                          await refrigeratorsController.leaveRefrigerator(
+                            id: id,
+                          );
+                        } catch (e) {
+                          print(e);
+                        } finally {
+                          EasyLoading.dismiss();
+                        }
+                      },
                       child: Text('이 냉장고 나가기'),
                     ),
                   ),
@@ -137,16 +149,67 @@ class RefrigeratorManagePage extends StatelessWidget {
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(),
               onPressed: () async {
-                final refrigerator = await Get.toNamed('/refrigerator-write');
-                if (refrigerator != null && refrigerator is Refrigerator) {
-                  HomeController;
-                }
+                await _showAddBottomSheet(context);
+                // final refrigerator = await Get.toNamed('/refrigerator-write');
+                // if (refrigerator != null && refrigerator is Refrigerator) {
+                //   HomeController;
+                // }
               },
               child: Text('+ 새 냉장고 추가하기'),
             ),
           )
         ],
       ),
+    );
+  }
+
+  _showAddBottomSheet(BuildContext context) {
+    final nameController = TextEditingController();
+    showFlexibleBottomSheet(
+      minHeight: 0,
+      initHeight: 0.5,
+      maxHeight: .5,
+      context: context,
+      builder: (context, controller, _) => StatefulBuilder(
+        builder: (context, setState) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Text('새 냉장고 추가하기'),
+                  Expanded(child: TextFormField(controller: nameController)),
+                  Row(
+                    children: [
+                      OutlinedButton(onPressed: () {}, child: Text('취소')),
+                      TextButton(
+                        onPressed: () async {
+                          try {
+                            EasyLoading.show();
+                            await refrigeratorsController.addRefrigerator(
+                              name: nameController.text,
+                            );
+                            Navigator.pop(context);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('냉장고가 추가되었습니다')));
+                          } finally {
+                            EasyLoading.dismiss();
+                          }
+                        },
+                        child: Text('추가하기'),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+      anchors: [0, 0.5, 1],
     );
   }
 }
