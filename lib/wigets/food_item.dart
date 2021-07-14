@@ -68,7 +68,9 @@ class FoodItem extends StatelessWidget {
     );
 
     if (result is int && result > 0) {
-      final foodsController = Get.find<FoodsController>();
+      final foodsController = Get.find<FoodsController>(
+        tag: '${food.refrigerator}-${null}',
+      );
       try {
         EasyLoading.show();
         await foodsController.intake(food: food, count: result);

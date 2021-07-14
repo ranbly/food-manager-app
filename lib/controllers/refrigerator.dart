@@ -56,6 +56,7 @@ class RefrigeratorController extends GetxController {
   }
 
   createInviteLink() async {
+    // final parameter = DynamicLinkParameters();
     return '';
   }
 }
